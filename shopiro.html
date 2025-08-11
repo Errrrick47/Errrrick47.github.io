@@ -1,0 +1,545 @@
+<html lang="es"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleShop - Tienda Minimalista</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #6b46c1;
+        }
+        
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .cart-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #6b46c1;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+            display: none;
+        }
+        
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #6b46c1, #a78bfa);
+            border-radius: 10px;
+            padding: 30px;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .hero h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .hero-btn {
+            background-color: white;
+            color: #6b46c1;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Categories */
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .category-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .category-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        
+        /* Products */
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .sort-select {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: white;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            background-color: #f8f9fa;
+        }
+        
+        .product-info {
+            padding: 15px;
+        }
+        
+        .product-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .product-price {
+            font-weight: bold;
+            color: #6b46c1;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .old-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 0.9rem;
+            margin-left: 5px;
+        }
+        
+        .add-to-cart {
+            background-color: #6b46c1;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        .add-to-cart:hover {
+            background-color: #5e3eb6;
+        }
+        
+        /* Cart Sidebar */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            background-color: white;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .cart-items {
+            flex-grow: 1;
+        }
+        
+        .cart-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-right: 15px;
+            background-color: #f8f9fa;
+        }
+        
+        .cart-item-info {
+            flex-grow: 1;
+        }
+        
+        .cart-item-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .cart-item-price {
+            color: #6b46c1;
+            margin-bottom: 5px;
+        }
+        
+        .cart-item-remove {
+            color: #dc2626;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .cart-total {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .checkout-btn {
+            background-color: #6b46c1;
+            color: white;
+            border: none;
+            padding: 12px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .checkout-btn:hover {
+            background-color: #5e3eb6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">
+                <img src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-a108-61f7-b316-471dfc4fea90/raw?se=2025-08-11T02%3A09%3A55Z&sp=r&sv=2024-08-04&sr=b&scid=37c8bdfc-1371-59bc-a891-a169523cc6e1&skoid=04233560-0ad7-493e-8bf0-1347c317d021&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-08-10T23%3A33%3A23Z&ske=2025-08-11T23%3A33%3A23Z&sks=b&skv=2024-08-04&sig=ak/o2bbxKvHBfO41ovwiGFfdPzfRQyevc57okdABp4Y%3D" alt="Logo de Sky Store - Letra S estilizada en color negro">
+                <span style="margin-left: 450px; color: #000000;">Argentina Store</span>
+            </a>
+            <button id="cartBtn" class="cart-btn">
+                
+                <span id="cartCount" class="cart-count" style="display: none;">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        
+
+        <!-- Categories -->
+        <section>
+            <h2 class="section-title">Categorías</h2>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1db1572d-b585-4ff2-803f-8d196426f809.png" alt="Ícono de electrónica - Representación esquemática de un chip de computadora">
+                    <h3>Electrónica</h3>
+                </div>
+
+
+                
+            </div>
+        </section>
+
+        <!-- Products -->
+        <section>
+            <h2 class="section-title">Productos Destacados</h2>
+            
+            <div class="products-grid">
+                <!-- Product 1 -->
+                <div class="product-card">
+                    <img src="https://http2.mlstatic.com/D_NQ_NP_834922-MLA32121762817_092019-O.webp" alt="SANDISK 32GB PENDRIVE CRUZER BLADE (NEGRO)" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Sandisk 32GB CRUZER BLADE</h3>
+                        <div class="product-price">$14.300</div>
+                        <span class="old-price">$24.900</span>
+                        
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <img src="https://diamondsystemar.vtexassets.com/arquivos/ids/155824/740617309829_1.jpg?v=638013504546230000" alt="Smartwatch deportivo negro con pantalla táctil y correa de silicona" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Pendrive KINGSTON 64GB</h3>
+                        <div>
+                            <span class="product-price">$19.200</span>
+                            <span class="old-price">$27.900</span>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="https://http2.mlstatic.com/D_NQ_NP_626924-MLA82381267900_022025-O.webp" alt="Smartwatch deportivo negro con pantalla táctil y correa de silicona" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Soporte de TV</h3>
+                        <div>
+                            <span class="product-price">$21.300</span>
+                            <span class="old-price">$32.000</span>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="https://http2.mlstatic.com/D_NQ_NP_898406-MLA80938074397_112024-O.webp" alt="Smartwatch deportivo negro con pantalla táctil y correa de silicona" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Balanza de baño Bluetooth</h3>
+                        <div>
+                            <span class="product-price">$23.300</span>
+                            <span class="old-price">$43.600</span>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="https://http2.mlstatic.com/D_NQ_NP_875411-MLA83572120853_042025-O.webp" alt="Smartwatch deportivo negro con pantalla táctil y correa de silicona" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Mochila pechera con clave</h3>
+                        <div>
+                            <span class="product-price">$23.400</span>
+                            <span class="old-price">$38.900</span>
+                        </div>
+                        
+                    </div>
+                </div>
+
+
+                <!-- Product 2 -->
+                <div class="product-card">
+                    <img src="https://http2.mlstatic.com/D_NQ_NP_632176-MLA84081157073_042025-O.webp" alt="Smartwatch deportivo negro con pantalla táctil y correa de silicona" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">XIAOMI Redmi 14C 128GB/8 RAM</h3>
+                        <div>
+                            <span class="product-price">$295.000</span>
+                            <span class="old-price">$360.000</span>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card">
+                    <img src="https://http2.mlstatic.com/D_NQ_NP_964076-MLA80685648746_112024-O.webp" alt="Auriculares inalámbricos con cancelación de ruido en color blanco" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Parlante Bluetooth 3"x2 GTS-1557</h3>
+                        <div class="product-price">$89.200</div>
+                        <span class="old-price">$147.900</span>
+                        
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card">
+                    <img src="https://http2.mlstatic.com/D_Q_NP_946050-MLA83019426634_032025-O.webp" alt="PROYECTOR LED SMART ANDROID WIFI BT ULTRA HD" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">FIRE TV STICK</h3>
+                        <div class="product-price">$89.300</div>
+                        <span class="old-price">$137.000</span>
+                    
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card">
+                    <img src="https://dcdn-us.mitiendanube.com/stores/005/661/366/products/6-c41ae7eb438f1a523717422784094785-1024-1024.png" alt="PROYECTOR LED SMART ANDROID WIFI BT ULTRA HD" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">ASPIRADORA ROBOT</h3>
+                        <div class="product-price">$129.300</div>
+                        <span class="old-price">$189.900</span>
+                        
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card">
+                    <img src="https://d22fxaf9t8d39k.cloudfront.net/8d9aff2e29445db1dd44f13c0a65b5934288cd9d50c202addbcff7b9ce3a33c46442.jpg" alt="PROYECTOR LED SMART ANDROID WIFI BT ULTRA HD" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">PROYECTOR LED SMART ANDROID WIFI BT ULTRA HD</h3>
+                        <div class="product-price">$148.300</div>
+                        <span class="old-price">$224.400</span>
+                        
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card">
+                    <img src="https://images.fravega.com/f500/be83a807d7426097eb4c3bc4ec1bb721.png" alt="PROYECTOR LED SMART ANDROID WIFI BT ULTRA HD" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">XIAOMI POCO C75 256GB/8RAM</h3>
+                        <div class="product-price">$329.300</div>
+                        <span class="old-price">$424.200</span>
+                        
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card">
+                    <img src="https://http2.mlstatic.com/D_NQ_NP_652621-MLA81836789057_012025-O.webp" alt="PROYECTOR LED SMART ANDROID WIFI BT ULTRA HD" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">XIAOMI POCO C65 256GB/8RAM</h3>
+                        <div class="product-price">$350.000</div>
+                        <span class="old-price">$410.600</span>
+                        
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    
+
+
+    </script>
+    <footer style="background: #000000; color: white; padding: 20px; text-align: left; margin-top: 30px;">
+        <h3>Contacto</h3>
+        <p>Whatsapp: +54 11 7118-9212</p>
+        <p>Dirección: Buenos Aires CABA, Argentina</p>
+    </footer>
+
+</body></html>
